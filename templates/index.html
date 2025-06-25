@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Notes Portal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>📚 Student Notes Sharing Portal</h1>
+
+        <!-- Navigation -->
+        <nav>
+            <a href="{{ url_for('upload') }}">Upload Notes</a>
+        </nav>
+
+        <!-- Search Form -->
+        <form action="{{ url_for('index') }}" method="get" class="search-form">
+            <input type="text" name="subject" placeholder="Search by Subject">
+            <input type="text" name="semester" placeholder="Search by Semester">
+            <button type="submit">Search</button>
+        </form>
+
+        <hr>
+
+        <!-- Notes Section -->
+        {% for note in notes %}
+            <div class="note-card">
+                <h2>{{ note.title }}</h2>
+                <p><strong>Subject:</strong> {{ note.subject }} | <strong>Semester:</strong> {{ note.semester }}</p>
+                <a href="{{ url_for('uploaded_file', filename=note.filename) }}" download>Download</a>
+
+                <!-- Like Form -->
+                <form action="{{ url_for('like', note_id=note.id) }}" method="post" class="like-form">
+                    <button type="submit">❤️ Like ({{ note.likes }})</button>
+                </form>
+
+                <!-- Comment Form -->
+                <form action="{{ url_for('comment', note_id=note.id) }}" method="post" class="comment-form">
+                    <input type="text" name="text" placeholder="Write a comment..." required>
+                    <button type="submit">💬 Comment</button>
+                </form>
+
+                <!-- Comments List -->
+                <div class="comments">
+                    {% for comment in comments[note.id] %}
+                        <p class="comment">💬 {{ comment.text }}</p>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
